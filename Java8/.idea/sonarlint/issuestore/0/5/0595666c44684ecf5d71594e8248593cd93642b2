@@ -1,0 +1,11 @@
+
+W
+java:S1141("5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8šê•¢•0
+V
+java:S1075"ARefactor your code to get this URI from a customizable parameter.(ÎÝÅ5
+Z
+java:S21472"DCombine this catch with the one at line 48, which has the same body.(ï­£Ä
+{
+java:S2142*"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(ä ¹€8«ê•¢•0
+S	java:S106;"9Replace this use of System.out or System.err by a logger.(ñœûáüÿÿÿÿ
+U	java:S106?"9Replace this use of System.out or System.err by a logger.(´ßßü8¨Å’¢•0

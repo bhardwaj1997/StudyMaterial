@@ -1,0 +1,424 @@
+
+
+Search:
+docker search nginx
+
+docker search nginx --filter=stars=20
+
+docker search nginx --filter=is-automated=true
+
+docker search nginx --filter=is-official=true
+
+docker search jdk --filter=is-official=true
+
+docker search --filter is-automated=true --filter stars=3 postgres 
+
+
+Formatting:
+
+ docker search --format "{​​​​​{​​​​​.Name}​​​​​}​​​​​" nginx
+
+docker search --format "{​​​​​{​​​​​.Name}​​​​​}​​​​​ ---- {​​​​​{​​​​​.IsOfficial}​​​​​}​​​​​" nginx 
+
+docker search --format "{​​​​​{​​​​​.Name}​​​​​}​​​​​ ---- {​​​​​{​​​​​.IsAutomated}​​​​​}​​​​​" nginx
+
+docker search --format "{​​​​​{​​​​​.Name}​​​​​}​​​​​ ---- {​​​​​{​​​​​.StarCount}​​​​​}​​​​​" nginx
+
+docker search --format "name={​​​​​{​​​​​.Name}​​​​​}​​​​​ ---- star={​​​​​{​​​​​.StarCount}​​​​​}​​​​​" nginx
+
+
+
+Docker-Network:
+docker network ls
+docker container run -dit --name nginx-cont --network host nginx
+	curl localhost -v
+docker network inspect bridge
+
+docker run -dit --name ctr1 alpine ash
+docker run -dit --name ctr2 alpine ash
+docker ps
+docker inspect 2f285c9b92a4
+172.17.0.11
+docker network inspect bridge
+docker exec -it ctr1 sh
+ping ip-of-ctr2
+ 
+docker network create -d bridge gold-nw
+docker container run -dit --name ctr3 --network gold-nw alpine sh
+docker container run -dit --name ctr4 --network gold-nw alpine sh
+ 
+docker network inspect gold-nw
+172.23.0.2/
+172.23.0.3/1
+docker exec -it ctr3 sh
+ping ip-of-ctr4
+ping ctr4
+
+
+docker run --rm -dit \
+  --network none \
+  --name no-net-alpine \
+  alpine:latest \
+  ash
+
+docker inspect container
+
+
+docker inspect cont-id
+
+docker network inspect none
+
+
+
+[10:23 AM] Misbah (Guest)
+Docker-Compose:
+
+1) download code(docker-db-demo) from github:
+
+https://github.com/misbaharchitect/microservice/tree/main/citustech/docker-db-demo 2) install docker-compose:
+
+   apt-get install docker-compose 3) Copy to ubuntu machine, following files:
+
+   docker-compose.yml, docker-db-demo-0.0.1-SNAPSHOT.jar, wait-for-it.sh, wait.Dockerfile docker-compose config -q
+
+docker-compose build
+
+docker images
+
+docker-compose up -d
+
+docker ps
+
+curl localhost:8080/users 4) update docker-compose.yml to use postgres docker container
+
+docker-compose down
+
+docker ps -a
+
+docker-compose config -q Useful docker-compose commands:
+
+run these commands from directory where docker-compose.yml file is present:
+
+docker-compose config
+
+docker-compose config -q
+
+docker-compose build
+
+docker-compose up
+
+docker-compose up -d
+
+docker-compose down
+
+docker-compose start
+
+docker-compose stop
+
+docker-compose ps
+
+run these commands from directory where docker-compose.yml file is present:
+	
+docker-compose config -q
+docker-compose build
+docker-compose up
+docker-compose down
+docker-compose start
+docker-compose stop
+docker-compose ps
+docker-compose logs
+docker-compose logs -f
+docker-compose logs --tail 10
+docker-compose logs -t
+docker-compose logs | grep postgres
+docker-compose logs | grep -i postgres
+
+
+
+
+
+Docker-Compose:
+1) download code(docker-db-demo) from github:
+https://github.com/misbaharchitect/microservice/tree/main/citustech/docker-db-demo
+ 
+2) install docker-compose:
+   apt-get install docker-compose
+
+
+scp -r /c/Users/KuldeepB/Downloads/microservice/microservice-main/citustech/docker-db-demo/docker-compose.yml adminroot@23.96.179.148:/home/adminroot/Kuldeep
+
+/c/Users/KuldeepB/Downloads/microservice-main(3)/microservice-main/citustech/docker-db-demo
+
+
+
+
+
+1)
+Copy to container:
+docker cp newfile.txt d2a9bbc88525:/
+Copy from container:
+docker cp d2a9bbc88525:/another.txt .
+ 
+Create volume and make changes in host machine and container both::
+2)
+Volume:
+docker run -d --name devtest --mount source=myvol2,target=/app nginx:latest	
+ls /var/lib/docker/volumes/myvol2/_data/
+vim hostfile.txt
+this is host file 
+
+docker exec -it devtest sh
+# make changes to the file hostfile.txt inside container
+echo "This a text inside container for volume" > /app/hostfile.txt
+# see changes to the file hostfile.txt on host machine
+cat /var/lib/docker/volumes/myvol2/_data/hostfile.txt
+ 
+this is host file
+This a text inside container for volume
+
+3)
+# Bind Mount:
+docker run -dit --name devtestbindmount --mount type=bind,source="$(pwd)"/bindmount,target=/app nginx:latest
+docker exec -it devtestbindmount sh
+# make changes to the file bind.txt inside container
+echo "This a text inside container for bindmount" > /app/bind.txt
+# see changes to the file bind.txt on host machine
+vim bindmount/bind.txt
+docker ps
+docker exec -it devtestbindmount sh
+cat /app/bind.txt
+
+
+
+
+
+VOlume Handson Commands:
+Docker Volume:
+ 
+docker volume ls
+docker volume create myvol
+docker volume rm myvol
+docker run -dit --name contwithvol --mount source=myvol,target=/vol alpine:latest
+docker exec -it contwithvol sh
+ls vol
+echo "some data" > abc.txt
+cat /vol/abc.txt
+exit
+ls -l /var/lib/docker/volumes/myvol/_data/
+cat /var/lib/docker/volumes/myvol/_data/abc.txt
+echo "another data" >> /var/lib/docker/volumes/myvol/_data/abc.txt
+docker exec -it contwithvol sh
+cat /vol/abc.txt
+
+
+
+
+
+Multistage:
+ 
+1) Dockerfile:
+FROM maven:3.6.3-jdk-11-slim as build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src src
+RUN mvn package -Dmaven.test.skip
+ 
+FROM tomcat:9
+COPY --from=build /app/target/multistageapp.war ${CATALINA_HOME}/webapps/multistageapp.war
+EXPOSE 8080
+ENTRYPOINT ["catalina.sh", "run"]
+ 
+2) Build Image:
+docker build -t multistage:1.0 -f DockerfileTomcat  .
+ 
+3) Run Image:
+docker run -d -p 8080:8080 <image-id>
+ 
+4) Test:
+curl localhost:8080/hello
+
+
+
+FROM maven:3.8.4-openjdk-8 as build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src src
+RUN mvn package -Dmaven.test.skip
+
+FROM tomcat:8.5.73-jre8-openjdk-slim
+COPY --from=build /app/target/multistage-war-0.0.1-SNAPSHOT.war ${CATALINA_HOME}/webapps/multistage-war-0.0.1-SNAPSHOT.war
+EXPOSE 8080
+ENTRYPOINT ["catalina.sh", "run"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) copy orderms code to ubuntu machine
+2) install jdk: apt-get install openjdk-8-jdk
+3) ./mvnw spring-boot:build-image
+4) docker images
+
+
+Docker Environment Variables:
+
+ENV SPRING_PROFILES_ACTIVE=dev
+ENV MYFILE="my File.txt"
+ENV MYFILE=my\ File.txt
+ENV DIR=/config LEVEL=info
+ENV DB mysql
+ENV DB=sql
+#in run command: --env-file env.dev
+ 
+$MYFILE
+
+1) orderms to have profile specific values (/profile): application.properties, application-dev.properties and application-prod.properties
+ 
+    @Value("${profile}")
+    private String profile;
+ 
+    @GetMapping("/profile")
+    public String getProfile() {
+        return profile;
+    }
+ 
+2) build jar and copy to ubuntu machine
+3) Dockerfile include: ENV SPRING_PROFILES_ACTIVE=dev
+FROM openjdk:11-jdk-slim
+WORKDIR /ordermsdir
+ENV SPRING_PROFILES_ACTIVE=dev
+COPY orderms-0.0.1-SNAPSHOT-profile.jar /app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+ 
+4) Run without profile:
+docker run -p 8081:8081 <container-id>
+5) Test /profile api to show "dev"
+6) Run with profile:
+docker run -e SPRING_PROFILES_ACTIVE=prod -p 8082:8082 <container-id>
+7) Test /profile api to show "prod"
+
+mvnw clean install -Dmaven.test.skip
+
+"19-Dec-2021_Misbah-New.pem"
+scp -r /c/Users/KuldeepB/Desktop/userjar.jar adminroot@20.80.32.184:/home/adminroot
+
+scp -r /c/Users/KuldeepB/Desktop/Dockerfile adminroot@20.80.32.184:/home/adminroot
+
+scp -r /c/Users/KuldeepB/Documents/workspace-spring-tool-suite-4-4.4.0.RELEASE/orderms adminroot@20.80.32.184:/home/adminroot/Kuldeep
+scp -r /c/Users/KuldeepB/Documents/workspace-spring-tool-suite-4-4.4.0.RELEASE/CT-AdminLogin/target/CT-AdminLogin-0.0.1-SNAPSHOT.jar adminroot@23.96.236.104:/home/adminroot/ImpactTrainingProjects	
+
+scp -r /c/Users/KuldeepB/DOCKER/FrontendDockerTest/GTest adminroot@23.96.179.148:/home/adminroot/TESTINGTHINGS
+
+/c/Users/KuldeepB/DOCKER/FrontendDockerTest/DockerTest
+
+C:\Users\KuldeepB\DOCKER\FrontendDockerTest\dockertest
+
+
+orderms-0.0.1-SNAPSHOT.jar
+
+sudo su -  get into admin root 
+docker images  --> get list of all images 
+docker ps  --> list of all container
+docker ps -a  --> list of all dead container 
+docker container ls --> list of all container
+docker container ls -a   --> list of all dead container
+
+esc --> to get out insert mode
+rm -rf .Dockerfile.swp
+:wq --> get out of file 
+
+Misbah (Guest)11:31 AM
+1) Dockerfile
+
+FROM openjdk:8-jdk-alpine
+COPY userjar.jar /app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+2) docker build -t userms:1.0 .
+
+3) docker images
+
+4)  docker run -p 8081:8081 a6ac49cb1d92
+
+-f dockerFileAnkita -->>
+
+
+1) detached mode ("-d")
+docker run -d -p 8083:8082 6ebc2fc994d1   
+ 
+2) docker logs <container-id>
+docker logs <container-id> -f
+# Last few lines of logs based on the number provided
+docker logs <container-id> --tail 5
+# timestamp:
+docker logs <container-id> -t
+# case sensitive search
+docker logs <container-id> | grep Inside
+# case insensitive search
+docker logs <container-id> | grep -i inside
+docker logs <container-id> --details
+ 
+3) Name the container "orderms_8083"
+docker run -d --name orderms_8083 -p 8083:8082 6ebc2fc994d1
+4) docker stop <container-id>
+   docker stop -f <container-id>
+
+3) Name the container "orderms_8083"
+docker run -d --name orderms_8083 -p 8083:8082 6ebc2fc994d1
+4) docker stop <container-id>
+   docker stop -f <container-id>
+
+
+docker rm <container-id>
+docker rmi <image-id>
+ 
+# prompts for username and password
+docker login
+docker push misbaharchitect/firstrepo:orderms-1.5
+docker rmi <image-id>
+docker images
+docker pull misbaharchitect/firstrepo:orderms-1.5
+
+
+docker tag orderms:1.0 misbaharchitect/firstrepo:orderms-3.3
+docker login
+docker push misbaharchitect/firstrepo:orderms-3.3
+
+docker pull misbaharchitect/firstrepo:orderms-3.3
+
+
+docker exec -it bf18d6302e55 /bin/bash
+
+
+ls
+
+
+ps -ef
+
+
+apt-get update
+
+apt-get install -y procps
+
+ps -ef
+
+kill 1
+
+docker system prune
+
+
+yum update
+
+docker exec -it bf18d6302e55 sh
+

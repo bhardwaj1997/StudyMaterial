@@ -1,0 +1,10 @@
+
+T
+java:S1172"9Remove these unused method parameters "from", "password".(ÅŒ¾ÿÿÿÿÿ
+’
+java:S5527"wEnable server hostname verification on this SSL/TLS connection, by setting "mail.smtp.ssl.checkserveridentity" to true.(£Ó±ùÿÿÿÿ
+Z
+java:S2147-"DCombine this catch with the one at line 43, which has the same body.(°±âİ
+S	java:S106*"9Replace this use of System.out or System.err by a logger.(¿Î¦†ùÿÿÿÿ
+J
+java:S1128"/Remove this unused import 'javax.mail.Message'.(¤©ºóıÿÿÿÿ

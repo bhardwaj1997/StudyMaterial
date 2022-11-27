@@ -1,0 +1,318 @@
+
+Day-2:
+
+1) start.spring.io: 
+
+   kafka-producer - web, kafka
+
+   kafka-consumer-1 - kafka
+
+   kafka-consumer-2 - kafka
+
+ 2) Write Logic for Producer:
+
+   kafka-producer:
+
+   @SpringBootApplication
+
+   @RestController
+
+   public class KafkaProducermsApplication {​​​​​     @Autowired
+
+    private KafkaTemplate<String, String> kafkaTemplate;     @GetMapping("/messages/{​​​​​message}​​​​​")
+
+    public String sendMessage(@PathVariable String message) {​​​​​
+
+        System.out.println("message: " + message);
+
+        kafkaTemplate.send("mytopic", message);
+
+        return "Message published: " + message;
+
+    }​​​​​    
+kafka-consumer-1:
+
+   @KafkaListener(topics = "mytopic", groupId = "a")
+
+    public void consume(String message) {​​​​​
+
+        System.out.println("Consumer-1 received: " + message);
+
+    }​​​​​    kafka-consumer-2:
+
+       @KafkaListener(topics = "mytopic", groupId = "b")
+
+    public void consume(String message) {​​​​​
+
+        System.out.println("Consumer-2 received: " + message);
+
+    }​​​​​ 
+
+3) Start all these three services.
+
+4) Browser: localhost:8080/messages/1
+
+5) Check logs of both consumers
+
+6) Change groupId of kafka-consumer-2 to "a" which is same as that of kafka-consumer-1.
+
+7) Restart kafka-consumer-2
+
+8) Browser: localhost:8080/messages/1
+
+9) Only one consumer will be able to consume messages
+
+
+@GetMapping("/messages/{message}")
+   public String sendMessage(@PathVariable String message) {
+      System.out.println("message: " + message);
+      int i = Integer.parseInt(message);
+      String key;
+      if (i % 2 == 0) {
+         key = "even1";
+      } else {
+         key = "odd1";
+      }
+//    kafkaTemplate.send("mytopic2", message);
+      kafkaTemplate.send("mytopic3", key, message);
+      return "Message published: " + message;
+   }
+
+
+[11:53 AM] Misbah (Guest)
+Exchange User object between Kafka Producer and Consumer:
+
+1) Consumer"
+
+        <dependency>
+
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+
+            <artifactId>jackson-dataformat-xml</artifactId>
+
+        </dependency> 
+
+2) Add new class in both Producer and Consumer:
+
+com.model.User: id, name
+
+3) Producer:
+
+    @GetMapping("/users/{​​​​​id}​​​​​")
+
+    public String sendMessage(@PathVariable String id) {​​​​​
+
+        User user = new User();
+
+        user.setId(Integer.parseInt(id));
+
+        user.setName(id + ": abc");         System.out.println("publish: " + user);
+
+        kafkaTemplate.send("mytopic5", user);         return id;
+
+    }​​​​​
+
+4) Consumer:
+
+    @KafkaListener(topics = "mytopic5", groupId = "a")
+
+    public void consume(User user) {​​​​​
+
+        System.out.println("Consumer-1 user: " + user);
+
+    }​​​​​
+
+[11:56 AM] Misbah (Guest)
+Producer:
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+spring.kafka.producer.properties.spring.json.trusted.packages=*
+
+
+
+[11:56 AM] Misbah (Guest)
+Consumer:spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
+spring.kafka.consumer.properties.spring.json.trusted.packages=*
+
+
+
+
+[2:44 PM] Misbah (Guest)
+Producer Code:pom.xml:<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.edu.producerapi</groupId>
+    <artifactId>kafkaapi-producer-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>com.edu.producerapi.KafkaProducerApi</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- Kafka Clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+    </dependencies>
+</project>
+
+ProducerMain:package com.edu.producerapi;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import java.util.Properties;
+public class ProducerMain {​​​​​​
+    public static void main(String[] args) {​​​​​​
+        Properties properties = new Properties();
+        properties.put("bootstrap.servers", "localhost:9092");
+        properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(properties);
+        System.out.println("publishing messages");
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<>("mytopic", "This is a message");
+        kafkaProducer.send(producerRecord);
+        kafkaProducer.close();
+    }​​​​​​
+}​​​​​​
+
+
+
+[2:44 PM] Misbah (Guest)
+Consumer:pom.xml:<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.edu.consumerapi</groupId>
+    <artifactId>kafkaapi-consumer-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- Kafka Clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+    </dependencies>
+</project>
+
+ConsumerMain:package com.edu.consumerapi;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Properties;
+public class ConsumerMain {​​​​​​
+    public static void main(String[] args) {​​​​​​
+        Properties properties = new Properties();
+        properties.put("bootstrap.servers", "localhost:9092");
+        properties.put("group.id", "mygroup");
+        properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
+        kafkaConsumer.subscribe(Arrays.asList("mytopic"));
+        while(true) {​​​​​​
+            System.out.println("Polling Kafka");
+            ConsumerRecords<String, String> consumerRecords = kafkaConsumer.poll(Duration.ofSeconds(10));
+            consumerRecords.forEach(r -> System.out.println("message received: " + r.value()));
+        }​​​​​​
+    }​​​​​​
+}​​​​​​
+
+
+
+
+
+
+
+#Starting Zookeeper
+bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+
+#Starting Kafka server
+bin\windows\kafka-server-start.bat config\server.properties
+
+#List all topics
+bin\windows\kafka-topics.bat --list --bootstrap-server localhost:9092
+
+#Create new topics
+bin\windows\kafka-topics.bat --create --topic mytopic --bootstrap-server localhost:9092
+
+bin\windows\kafka-topics.bat --create --topic mytopic2 --bootstrap-server localhost:9092 --partitions 2 --replication-factor 1
+
+#describe topics
+bin\windows\kafka-topics.bat --describe --bootstrap-server localhost:9092 --topic mytopic
+
+#console producer:
+bin\windows\kafka-console-producer.bat --topic mytopic --broker-list localhost:9092
+
+#console consumer
+bin\windows\kafka-console-consumer.bat --topic mytopic --bootstrap-server localhost:9092
+
+#consume on two partitions:
+bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic mytopic2 
+
+
+bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic mytopic2 --consumer-property group.id=test2
+
+#add partition
+Produce messages with a key on a topic having more than one partition and more than one Consumer:
+ 
+bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic mytopic2 --property parse.key=true --property key.separator=:
+ 
+# Launch two consumers with the same group.id so that they fall under same consumer group:
+bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic mytopic2 --consumer-property group.id=test2
+bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic mytopic2 --consumer-property group.id=test2
+ 
+In Producer terminal, publish messages in the following format:
+1:1
+1:2
+1:3
+2:1
+2:this is a message
+1: where would this go?
+2: may be on partition ?
+
+bin\windows\kafka-console-producer.bat --topic mytopic2 --bootstrap-server localhost:9092 --property parse.key=true --property key.separator=:

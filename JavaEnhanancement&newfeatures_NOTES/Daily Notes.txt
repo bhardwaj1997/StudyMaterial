@@ -1,0 +1,53 @@
+
+Collections:
+=============
+
+		String name="rk";//variables
+
+		String names[]={"rama","krishna","rk".......};
+		
+		String names1[]=new String[10];//index-0,1,2,3..9
+
+				
+			names1[1]="mahesh";
+			names1[8]="hello";
+			names1[10]=""AIOE
+
+
+
+	1)only homogeneous data 
+	2)fixed in size /not growable in nature
+	3)utility method not there 
+
+
+Collection:		java.util
+==========
+
+			//1)both homogeneous/haterogeneous data 
+			//2)collection are not fixed in size / growable in nature
+			//3)utility method not there 
+
+
+
+ArrayList-10
+			ArrayList al=new ArrayList();//10
+			
+			al.add("rama");
+			al.add(123);
+			.
+			.
+			.
+			
+			al.add("hyd");//16,25...
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+
+

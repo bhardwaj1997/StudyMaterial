@@ -1,0 +1,14 @@
+
+f
+java:S1301""KReplace this "switch" statement by "if" statements to increase readability.(óëÕŠùÿÿÿÿ
+H
+java:S1199"-Extract this nested code block into a method.(ÒÌâ–øÿÿÿÿ
+e
+java:S2095"JUse try-with-resources or close this "XSSFWorkbook" in a "finally" clause.(‡ö¸ÿûÿÿÿÿ
+h
+java:S2095"MUse try-with-resources or close this "FileInputStream" in a "finally" clause.(ÀæÙŠûÿÿÿÿ
+Z
+java:S2147,"DCombine this catch with the one at line 42, which has the same body.(ï­£Ä
+<	java:S131"""Add a default case to this switch.(óëÕŠùÿÿÿÿ
+S	java:S106$"9Replace this use of System.out or System.err by a logger.(“ÈüÒúÿÿÿÿ
+S	java:S106("9Replace this use of System.out or System.err by a logger.(ªÓ¼áþÿÿÿÿ

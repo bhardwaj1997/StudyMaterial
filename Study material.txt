@@ -1,0 +1,16 @@
+Links to study : -
+
+1.  https://angular.io/guide/observables
+2.  https://angular.io/guide/http#communicating-with-backend-services-using-http
+3.  https://angular.io/guide/http#communicating-with-backend-services-using-http
+4.  https://www.baeldung.com/spring-response-entity
+5.  https://www.baeldung.com/spring-data-jpa-query
+6.  https://spring.io/guides/tutorials/rest/
+7.  https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html
+8.  file:///C:/Users/KuldeepB/ebin.pub_spring-security-in-action-1nbsped-1617297739-9781617297731.pdf
+9.  https://www.baeldung.com/jpa-default-column-values
+10. https://www.baeldung.com/spring-requestparam-vs-pathvariable
+
+
+11. https://howtodoinjava.com/junit-5-tutorial/
+12. https://howtodoinjava.com/mockito/junit-mockito-example/
